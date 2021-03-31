@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pilot - Admin</title>
+</head>
+
+<style>
+  @font-face {
+    font-family: Merriweather;
+    src: url(Merriweather-Black.ttf);
+  }
+
+  body {
+    font-family: "Merriweather";
+  }
+  
+  .button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+</style>
+
+<body>
+  <h1>Is Pilot Outside - Admin Interface</h1>
+
+  <div id="loginPanel" style="display:none">
+    <button onclick="login()">Login</button>
+  </div>
+  <div id="logoutPanel" style="display:none">
+    <button onclick="logout()">Logout</button>
+  </div>
+  <br>
+  <div>
+    <input type="checkbox" id="status" onchange="updateStatus()"> Pilot is outside
+  </div>
+
+</body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDpu-JeHE8E9Vh9tjlncNbLFN5dP0V760Y",
+    authDomain: "pilot-9de05.firebaseapp.com",
+    databaseURL: "https://pilot-9de05-default-rtdb.firebaseio.com",
+    projectId: "pilot-9de05",
+    storageBucket: "pilot-9de05.appspot.com",
+    messagingSenderId: "626308268911",
+    appId: "1:626308268911:web:676705f5144077b0545e9a"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var provider = new firebase.auth.GoogleAuthProvider();
+
+  function login() {
+    firebase.auth()
+      .signInWithPopup(provider)
+      .then((result) => {
+        var credential = result.credential;
+        var token = credential.accessToken;
+        var user = result.user;
+        // ...
+      }).catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+        // ...
+      });
+  }
+
+  function logout() {
+    firebase.auth().signOut();
+  }
+
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      document.getElementById("loginPanel").style.display = "none";
+      document.getElementById("logoutPanel").style.display = "block";
+    } else {
+      document.getElementById("loginPanel").style.display = "block";
+      document.getElementById("logoutPanel").style.display = "none";
+    }
+  });
+
+  firebase.database().ref('/status').on('value', function(snapshot) {
+    let s = snapshot.val();
+    document.getElementById("status").checked = s;
+    console.log("from db: " + s);
+  });
+
+  function updateStatus() {
+    let s = document.getElementById("status").checked;
+    firebase.database().ref('status').set(s);
+    console.log("update status: " + s);
+  }
+</script>
+</html>

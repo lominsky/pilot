@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pilot - Admin</title>
+</head>
+
+<style>
+  @font-face {
+    font-family: Merriweather;
+    src: url(Merriweather-Black.ttf);
+  }
+
+  body {
+    font-family: "Merriweather";
+    font-size: 36pt;
+    vertical-align: middle;
+    padding: 25px;
+  }
+  h1 {
+    text-align: center;
+    vertical-align: middle;
+    height: 90%;
+  }
+
+</style>
+
+<body>
+  <h1 id="text"></h1>
+</body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+
+<script>
+  notifyMe();
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDpu-JeHE8E9Vh9tjlncNbLFN5dP0V760Y",
+    authDomain: "pilot-9de05.firebaseapp.com",
+    databaseURL: "https://pilot-9de05-default-rtdb.firebaseio.com",
+    projectId: "pilot-9de05",
+    storageBucket: "pilot-9de05.appspot.com",
+    messagingSenderId: "626308268911",
+    appId: "1:626308268911:web:676705f5144077b0545e9a"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.database().ref('/status').on('value', function(snapshot) {
+    let s = snapshot.val();
+    let t = document.getElementById("text");
+    if(s) {
+      t.innerText = "Pilot is outside!";
+      document.body.style.backgroundColor = "#7dff69";
+    } else {
+      t.innerText = "Sorry, Pilot isn't out right now.";
+      document.body.style.backgroundColor = "#ff6969";
+    }
+  });
+
+  function notifyMe() {
+    // Let's check if the browser supports notifications
+    if (!("Notification" in window)) {
+      console.log("This browser does not support desktop notification");
+    }
+
+    // Let's check whether notification permissions have alredy been granted
+    else if (Notification.permission === "granted") {
+      // If it's okay let's create a notification
+      // var notification = new Notification("Hi there!");
+    }
+
+    // Otherwise, we need to ask the user for permission
+    else if (Notification.permission !== 'denied' || Notification.permission === "default") {
+      Notification.requestPermission(function (permission) {
+        // If the user accepts, let's create a notification
+        if (permission === "granted") {
+          // var notification = new Notification("Hi there!");
+        }
+      });
+    }
+
+    // At last, if the user has denied notifications, and you
+    // want to be respectful there is no need to bother them any more.
+  }
+</script>
+</html>
