@@ -33,7 +33,8 @@
 <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
 
 <script>
-  notifyMe();
+  setupNotifications();
+  let previousStatus = null;
   // Your web app's Firebase configuration
   var firebaseConfig = {
     apiKey: "AIzaSyDpu-JeHE8E9Vh9tjlncNbLFN5dP0V760Y",
@@ -54,13 +55,19 @@
     if(s) {
       t.innerText = "Pilot is outside!";
       document.body.style.backgroundColor = "#7dff69";
+      if(previousStatus != null) {
+        var notification = new Notification("Pilot is outside!", {
+          "icon": "pilot.png"
+        });
+      }
     } else {
       t.innerText = "Sorry, Pilot isn't out right now.";
       document.body.style.backgroundColor = "#ff6969";
     }
+    previousStatus = s;
   });
 
-  function notifyMe() {
+  function setupNotifications() {
     // Let's check if the browser supports notifications
     if (!("Notification" in window)) {
       console.log("This browser does not support desktop notification");
